@@ -1,0 +1,75 @@
+Stella Huang 
+005707861
+
+Obstacles: 
+I mainly had trouble with two functions: getKindAsString() and canWorkoutHere(). For getKindAsString(), when I pasted my code into CodeBoard and tried compiling, I got the messages: 
+./Root/Gym.cpp: In member function 'std::string Gym::getKindAsString() const':
+./Root/Gym.cpp:102:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+./Root/GymMember.cpp: In member function 'std::string GymMember::getKindAsString() const':
+./Root/GymMember.cpp:48:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+It took me a bit to realize that CodeBoard was warning me that because my switch-case statement, which took in only the four enumerations OTHER, REGULAR, PREMIER, and EXECUTIVE, didn't have a default statement, getKindAsString() wouldn't return anything if mKind weren't any of the four case options. Therefore, after looking at the discussion group questions and seeing that the mKind would always be one of the four enumerations, I replaced the OTHER case with a default case that returned the string "OTHER" if mKind didn't match the previous three cases, which resolved this compilation issue. 
+
+I also had a bit of trouble with canWorkoutHere(), mainly in terms of how to implement it. I initially tried using the greater than and less than operations, but after learning in class that enumerations could only really be compared to each other with '==', I decided to just use a series of and-or statements, and parantheses to account for order of operations for enumerations like PREMIER and EXECUTIVE, where multiple Gym kinds would work with the GymMember's kind. 
+
+Test cases: (I wrote them as code so it's easier to test and commented the reasons)
+    Gym gym( "BFit", "330 De Neve Drive", REGULAR);
+    // checks if setFeatures sets bools and that the bool getters work properly
+    gym.setFeatures(true, false, true, false );
+    assert( gym.hasCardioFeatures() == true);
+    assert( gym.hasWeightsFeatures() == false);
+    assert( gym.hasPoolFeatures() == true);
+    assert( gym.hasTrackFeatures() == false);
+    
+    GymMember stella( "Stella", "005707861", EXECUTIVE );
+    // checks if constructor sets workout count to 0
+    assert( stella.workoutsThisMonth() == 0 );
+    // checks if newWorkout() increments workout count by 1
+    stella.newWorkout();
+    assert( stella.workoutsThisMonth() == 1 );
+    
+    // checks if canWorkoutHere function lets EXECUTIVE members into REGULAR GYM
+    if (gym.canWorkoutHere( stella ))
+       gym.checkin( stella, true, false, true, false );
+    // checks if checkin increments workout count by 1
+    assert( stella.workoutsThisMonth() == 2 );
+    
+    // checks if canWorkoutHere function is properly called in checkin and workout count is properly incremented
+    gym.checkin( stella, false, false, false, false );
+    assert( stella.workoutsThisMonth() == 3);
+    
+    // checks if start new month code works
+    stella.startNewMonth();
+    assert( stella.workoutsThisMonth() == 0);
+    
+    // checks if checkin function works when gym member's workout preferences aren't met by the gym and doesn't increment workout count
+    gym.checkin( stella, true, true, true, true );
+    assert( stella.workoutsThisMonth() == 0);
+    
+    Gym wooden( "Wooden", "BruinWalk", OTHER);
+    // check if canWorkoutHere properly excludes EXECUTIVE from OTHER
+    assert( wooden.canWorkoutHere( stella ) == false );
+    // check if constructor sets hasCardio, hasWeights, hasPool, and hasTrack to false so that when a member wants them they can't check in
+    assert( wooden.checkin( stella, true, true, true, true ) == false );
+    stella.startNewMonth();
+    // check if newWorkout properly increments workout count
+    stella.newWorkout();
+    assert( stella.workoutsThisMonth() == 1 );
+    // checks if getKindAsString's switch-case code works properly
+    assert( wooden.getKindAsString() == "OTHER" );
+    assert( stella.getKindAsString() == "EXECUTIVE" );
+    
+    // checks if getters for GymMember work
+    assert( stella.getKind() == EXECUTIVE );
+    assert( stella.getName() == "Stella" );
+    assert( stella.getKindAsString() == "EXECUTIVE" );
+    assert( stella.getAccountNumber() == "005707861" );
+    
+    // checks if getters for Gym work
+    assert( wooden.getKind() == OTHER );
+    assert( gym.getKindAsString() == "REGULAR" );
+    assert( gym.getName() == "BFit" );
+    assert( gym.getLocation() == "330 De Neve Drive" );
