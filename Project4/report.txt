@@ -1,0 +1,74 @@
+Stella Huang
+005707861
+
+Obstacles:
+
+The main obstacle I struggled with was coding shiftRight(). I wasn't sure how exactly to shift the array values while simultaneously  replacing a certain number of indices in the array with the placeholder value, all while not walking off the array. I do think that the code I wrote may have overcomplicated the function, but I found it easier to understand - essentially, I separated the two main processes shiftRight() had: (1) rotating the array right, (2) replacing the user's desired amount of values with the placeholder value. I wrote one for loop that was the opposite version of my rotateLeft() for loop, rotating the array right however many times the user wanted (the parameter 'amount'). I then wrote a basic for loop to replace the array's first 'amount' values with the placeholder. 
+
+A minor mistake I caught last minute was not actually replacing the values of the array in replaceAll. I ran my code through CodeBoard and thought nothing of the function's code at first because all of the cases worked - however, after using cerr to check whether the array's strings were updated, I was able to overcome this obstacle by making a temporary string value 'word' and setting the array index to whatever word updated itself to after replacing the 'letterToReplace' with 'letterToFill'.
+
+Test data: (I wrote it with assert statements so this can just be pasted into the main function)
+
+// Here are the arrays I would like to use in my test data: 
+string folks[8] = {  "samwell", "jon", "margaery", "daenerys", "tyrion", "sansa", "magdalena", "jon" }; // provided in assignment
+string data[5] = { "mama", "mama", "12", "sansa", "mama" }; // provided in assignment
+string a[7] = { "ee", "dd", "cc", "bb", "aa", "BB", "AA" }; // provided in CodeBoard
+string b[7] = { "AA", "BB", "BB", "BB", "cc", "dd", "ee" }; // provided in CodeBoard
+string c[6] = { "123", "456", "789", "gamma", "beta", "delta" };
+string hello[4] = { "aa", "bb", "bb", "cc" };
+string bye[4] = { "bb", "bb", "dd", "ee" };
+string same[4] = { "a", "a", "a", "a"};
+string nothing[3] = { " ", " ", "" };
+string r[1] = {"aa"};
+string foo[7] = {"foo", "foo", "foo", "bb", "aa", "BB", "AA"};
+    
+// checks if locateMinimum works on basic array with one minimum value
+assert(locateMinimum (folks, 8) == 3 );
+// checks if locateMinimum works on array with same values (returns smallest index)
+assert(locateMinimum (same, 3) == 0 );
+// checks if countCommonElements works on basic arrays with one common element
+assert(countCommonElements(folks, 8, data, 5) == 1);
+// checks if countCommonElements returns -1 when user inputs invalid array length
+assert(countCommonElements(folks, 9, data, -1) == -1);
+// checks if countCommonElements works on arrays without any common elements
+assert(countCommonElements(folks, 3, data, 3) == 0);
+// this is one of the CodeBoard scenarios, but b and a are swapped to check if the function works regardless of order of array parameters
+assert(countCommonElements(b, 7, a, 7 ) == 7);
+// a test case where there are multiple same values in both arrays
+assert(countCommonElements(hello, 4, bye, 4) == 4);
+// CodeBoard test but reversed
+assert(countCommonElements(b, 7, a, 7) == 7);
+// checks if countVowels works on arrays with no vowels
+assert(countVowels(c, 3) == 0 );
+// checks if countVowels works on array with vowels
+assert(countVowels(data, 5) == 8 );
+// checks if hasThreeOfX works on array without three of the string parameter
+assert(hasThreeOfX( folks, 5, "jon") == false);
+// checks if hasThreeOfX works on array with three of the string parameter
+assert(hasThreeOfX(foo, 4, "foo") == true);
+// checks if hasThreeOfX works on array with more than three of string parameter
+assert(hasThreeOfX(same, 4, "a") == false);
+// checks if majorityElement works on string of length 1
+assert(majorityElement(r, 1) == "aa");
+// checks if majorityElement works when there is a majority element
+assert(majorityElement(same, 4) == "a");
+// checks if majorityElement works when there isn't a majority element
+assert(majorityElement(folks, 8) == "");
+// checks if shiftRight works with valid parameters
+assert(shiftRight(a, 5, 1, "foo" ) == true);
+// checks if shiftRight works with 0 as amount shifted
+assert(shiftRight(a, 5, 0, "foo" ) == false);
+// checks if shiftRight works with invalid amount shifted parameter
+assert(shiftRight(data, 5, -10, "bar" ) == false);
+// checks if rotateLeft works with array of length 1
+assert(rotateLeft(r, 1, 5) == false);
+// checks if rotateLeft works with valid parameters
+assert(rotateLeft(hello, 2, 3) == true);
+// checks if rotateLeft works with amount being a multiple of array's length
+assert(rotateLeft(folks, 2, 12) == false);
+// checks if replaceAll works with char that isn't in any of array's string values
+assert(replaceAll(folks, 8, 'A', 'Z') == 0);
+// checks if replaceAll works with char that is in array's string values
+assert(replaceAll(folks, 8, 'a', 'Z') == 9);
+// checks if replaceAll works with array that has spaces as values
+assert(replaceAll(nothing, 3, ' ', 'Z') == 2);
