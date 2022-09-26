@@ -1,0 +1,59 @@
+Obstacles:
+
+The main obstacle I faced was figuring out how to code isValidCDPlayerString() so that it returned false for strings like "OICP123OC456" but true for strings like "OICP123OCP456." The only difference between the two strings' validities lies in the 'P' directly before the tracks '456', and as mentioned in the Canvas discussion, 'O' kind of inherently stops the CD player so that 'P' must be reentered for CD player to continue playing tracks '456'. However, although 'O' inherently stops the CD player, it has no relationship to 'S'. Understanding this complexity was a big challenge for me, but I overcame it by adding a boolean variable OisPlaying (which is affected by 'P' and 'O') in addition to the boolean variable isPlaying (which is affected by 'P' and 'S'). This way, 'O' doesn't affect 'S', but I can also inherently stop the CD player when 'O' appears so that in order for tracks '456' to continue playing, there must be a 'P' (which causes OisPlaying and isPlaying to be reset to true) in front of them. 
+
+A minor obstacle I overcame was accidentally equating chars to ints. For instance, in my switch-case statements, I would write something like, case '1': currentTrack = cdstring.at(pos) + 1. This is technically possible because a char does take an int value, but not the desired value (ie. instead of the char '1' equalling the int 1, it equals the int 49). It was a careless mistake to add chars and ints together, so I'm glad I realized this because it accounted for the majority of failures when I ran this through CodeBoard. 
+
+Program design: 
+
+My program has the five required functions, with isValidCDPlayerString() called in the four other functions. 
+
+isValidCDPlayerString() takes in the string parameter cdstring (directions for the CD player) and checks its validity (returns true for valid and false for invalid). It has five variables: bool isOpen, bool hasCD, bool OisPlaying, bool isPlaying, and int currentTrack. These are used in different char cases in a switch-case statement located inside a for loop that runs through each char of cdstring. isOpen is used for cases 'O', 'C', 'I', 'R', 'P', and all the track cases ('1', '2', '3', etc.), in which the CD player must either be open or closed for these to contribute to a valid string. hasCD is used for cases 'I', 'R', 'P', and all the track cases, which depend on the CD player either having or not having a CD to contribute to a valid string. I used both OisPlaying and isPlaying to account for cases where the tracks are not directly preceded by 'P', making the string invalid (refer to Obstacles: section of report for a more detailed explanation). Finally, I used currentTrack to keep track (no pun intended) of the tracks played throughout the string, making sure that currentTrack is reset to 1 if 'I' is found and that currentTrack increments by 1 to check that the tracks are consecutive.
+
+hasCD() first uses isValidCDPlayerString() to check if its string parameter cdstring is valid - if not, then it returns false. It uses one boolean variable hasCD which is returned at the end of the function (true if the CD player contains a CD, false otherwise). If valid, then cdstring is put through a for loop in which the chars 'I' and 'R' are kept an eye on. If 'I' appears last in cdstring (a CD was most recently inserted into the player and hasn't been taken out yet), then hasCD() returns true. If 'R' appears last in cdstring (the CD was removed from the player), then hasCD() returns false. And in all other cases it returns false. 
+
+isOpen() first uses isValidCDPlayerString() to check if its string parameter cdstring is valid - if not, then it returns false. It uses one boolean variable isOpen which is returned at the end of the function (true if the CD player is open, false otherwise). If valid, then cdstring is put through a for loop in which the chars 'O' and 'C' are kept an eye on. If 'O' appears last in cdstring, then we know that the CD player is currently open and isOpen() returns true. If 'C' appears last in cdstring, then we know that the CD player is currently closed and isOpen() returns false. And in all other cases it returns false. 
+
+totalTracksPlayed() first uses isValidCDPlayerString() to check if its string parameter cdstring is valid - if not, then it returns -1. It uses one int variable total set to 0 which is returned at the end of the function. If valid, then cdstring is put through a for loop where whenever the track chars ('1', '2', '3', etc.) appear, total increments by 1. 
+
+currentTrack() first uses isValidCDPlayerString() to check if its string parameter cdstring is valid - if not, then it returns -1. It uses one int variable currentTrack which is returned at the end of the function. If valid, then cdstring is put through a for loop where where whenever the track chars appear, currentTrack is updated to be 1 more than the track char (ie. when the char is '1', currentTrack is updated to be 2). currentTrack() also accounts for cases where there isn't a CD in the player or a CD has just been inserted (using a conditional statement with the function hasCD()). For the former, currentTrack() returns -1, and for the latter, currentTrack is reset to 1. By default, currentTrack is set to 1 (so that for cdstring inputs like "OIC", currentTrack() returns 1). 
+
+Test Data: (list can be inserted into main() function to check; reasons commented above)
+    // empty string
+    assert( isValidCDPlayerString("") == false );
+    // playing while open
+    assert( isValidCDPlayerString("OP123C") == false );
+    // not starting with 'O'
+    assert( isValidCDPlayerString("IC") == false );
+    // not right chars
+    assert( isValidCDPlayerString("hello!") == false );
+    // playing without CD
+    assert( isValidCDPlayerString("OICP12ORC1") == false );
+    // new CD inserted, so track should reset to '1'
+    assert( isValidCDPlayerString("OICP12ORICP345") == false );
+    // track not preceded by 'P'
+    assert( isValidCDPlayerString("OICP123OC456") == false );
+    // track preceded by 'P'
+    assert( isValidCDPlayerString("OICP123OCP456") == true );
+    // lacks track numbers
+    assert( isValidCDPlayerString("OICPO") == true );
+    // currentTrack when last char in string is a track char
+    assert( currentTrack("OICP123456789") == 10 );
+    // currentTrack when string lacks track numbers
+    assert( currentTrack("OICPO") == 1 );
+    // currentTrack when string is open (isOpen(cdstring) == true)
+    assert( currentTrack("OICP123O") == 4 );
+    // check if valid string's CD player is open
+    assert( isOpen( "OICP123ORIS" ) == true );
+    // check if invalid string's CD player is open
+    assert( isOpen( "ICP123ORIS" ) == false );
+    // returns total tracks for valid string
+    assert( totalTracksPlayed( "OICP123OCP456" ) == 6 );
+    // returns total tracks for invalid string
+    assert( totalTracksPlayed( "OICP123OC456" ) == -1 );
+    // check valid string with CD
+    assert( hasCD("OICP123ORI") == true );
+    // check valid string with CD
+    assert( hasCD("OICP123OR") == false );
+    // check invalid string
+    assert( hasCD("OICP124") == false );
