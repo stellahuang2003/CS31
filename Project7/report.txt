@@ -1,0 +1,91 @@
+Stella Huang
+005707861
+
+Notable Obstacles: 
+
+A major obstacle I encountered was when I entered my code into CodeBoard and got a "segmentation fault" message when I tried running the code. I had to look up what that meant, and it is reported when a program is trying to read or write an illegal memory location. I commented out different parts of my code to try and find where the source of the fault was, and then I realized that in Bunco's determineGameOutcome(), I invoked gameIsOver(), which also invokes determineGameOutcome(), creating a hazardous infinite loop. I initially used gameIsOver() in determineGameOutcome() assuming it would be able to eliminate all cases where the game wasn't over and have determineGameOutcome() return GAMENOTOVER, but then I realized that I could simply use a conditional statement (if (mRound < 6){ }) to check what round I was in, and if it wasn't the 6th round, return GAMENOTOVER.
+
+A minor obstacle I ran into was that when I ran main.cpp's code, my compiler only went up to the 5th round of play and then reported the game results (either "you won Bunco!" or "you lost Bunco!" and never "Bunco wound up tied!" because there were an odd number of rounds played). I was able to narrow down the problem to my determineGameOutcome(), where I tried adjusting the conditional statement (mRound < 6) to mRound <= 6 and mRound == 6, both of which made the game continue infinitely in the compiler. I then realized I could fix this issue by adding another conditional, with the assumption that the tester will always enter proper commands: (humanWins+computerWins)<6. I realized that for the game to be over, the number of human and computer wins would have to add up to 6, indicative of 6 rounds having been played.
+
+Test Data (formatted as code so it can be pasted into the main function()):
+
+    Die d1; d1.setValue(1);
+    Die d2; d2.setValue(2);
+    Die d3; d3.setValue(3);
+    Die d4; d4.setValue(4);
+    Die d5; d5.setValue(5);
+    Die d6; d6.setValue(6);
+    // testing out Player's TODO functions except roll()
+    Player p;
+    p.setRound(1);
+    p.roll(d2.getValue());
+    p.roll(d1.getValue());
+    // makes sure cheating roll(amount) properly increments score
+    assert(p.getScore() == 1);
+    
+    // testing out Board's TODO functions
+    Board board;
+    board.setCurrentRound(1);
+    board.markHumanAsWinner();
+    board.setCurrentRound(2);
+    board.markHumanAsWinner();
+    board.markComputerAsWinner();
+    assert(board.countUpHumanRoundWins() == 2);
+    assert(board.countUpComputerRoundWins() == 1);
+    
+    // testing out Player's roll() and Bunco's TODO functions
+    Bunco game;
+    game.humanPlay(d1);
+    game.endTurn(); // h: 1, c: 0 | overall: h: 1, c: 0
+    game.nextRound(); // now on Round 2
+    game.humanPlay(d2);
+    game.computerPlay(d2);
+    // checks to see if determineRoundOutcome() properly updates
+    assert(game.determineRoundOutcome() == Bunco::ROUNDOUTCOME::NOTDECIDED);
+    game.humanPlay(d2);
+    assert(game.determineRoundOutcome() == Bunco::ROUNDOUTCOME::HUMANWON);
+    // checks if endTurn() properly marks winner on the board
+    game.endTurn(); // h: 1, c: 1 | overall: h: 2, c: 0
+    assert(game.getBoard().countUpHumanRoundWins() == 2);
+    game.nextRound(); // now on Round 3
+    game.humanPlay(d1);
+    game.computerPlay(d1);
+    // checks if determineRoundOutcome() properly handles cases with no winner
+    assert(game.determineRoundOutcome() == Bunco::ROUNDOUTCOME::NOTDECIDED);
+    // checks if determineGameOutcome() properly returns that the game isn't over yet
+    assert(game.determineGameOutcome() == Bunco::GAMEOUTCOME::GAMENOTOVER);
+    game.computerPlay(d3);
+    assert(game.determineRoundOutcome() == Bunco::ROUNDOUTCOME::COMPUTERWON);
+    game.endTurn(); // h: 1, c: 2 | overall: h: 2, c: 1
+    game.nextRound(); // now on Round 4
+    game.humanPlay(d4);
+    game.endTurn(); // h: 1, c: 0 | overall: h: 3, c: 1
+    game.nextRound(); // now on Round 5
+    game.humanPlay(d5);
+    game.endTurn(); // h: 1, c: 0 | overall: h: 4, c: 1
+    game.nextRound(); // now on Round 6
+    game.humanPlay(d6);
+    game.endTurn(); // h: 1, c: 0 | overall: h: 5, c: 1
+    // check if DetermineGameOutcome() properly returns when human or computer wins after 6 rounds are played
+    assert(game.determineGameOutcome() == Bunco::GAMEOUTCOME::HUMANWONGAME);
+    
+    // checks functions returning random ints (roll(), humanPlay(), and computerPlay())
+    // sees if roll() properly increments score when it has rolled the round's value
+    p.setRound(1);
+    do
+    {
+        p.roll();
+    } while (p.getScore() != 1);
+    // sees if humanPlay() properly updates
+    Bunco b;
+    do
+    {
+        b.humanPlay();
+        b.endTurn();
+    } while (b.determineRoundOutcome() == Bunco::ROUNDOUTCOME::NOTDECIDED);
+    Bunco c;
+    do
+    {
+        c.computerPlay();
+        c.endTurn();
+    } while (c.determineRoundOutcome() == Bunco::ROUNDOUTCOME::NOTDECIDED);
