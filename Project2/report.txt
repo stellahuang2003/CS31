@@ -1,0 +1,21 @@
+One major obstacle I faced in this project was understanding how exactly the cell plan cost was calculated. For instance, when faced with a Prepaid cell plan and odd number of gigabytes consumed, I overcomplicated the calculation of the cost — I made an unnecessary if-else statement with different formulas based on whether the gigabytes value was even or odd. However, utilizing cout to check the cost's current value and testing different combinations using the online calculator helped me solve this problem. 
+
+Some inputs that can be tested on my code include: 
+Bad plan: ("hello", "bye", "later", -12, 100)
+Bad autopay: ("Unlimited Starter", "hello", "bye", -12, 100)
+Bad paperless: ("Unlimited Elite", "Yes", "hello", -12, 100) 
+- since CodeBoard doesn't have a bad paperless billing test case, this will see how my code handles a bad input like "hello" 
+Bad lines: ("Unlimited Extra", "No", "No", -12, 100)
+Bad gigabytes: ("Unlimited Extra", "No", "No", 3, 100)
+159 plan: ("Unlimited Starter", "Yes", "No", 3, 7)
+150 plan: ("Unlimited Elite", "No", "No", 2, 28)
+62 plan: ("Unlimited Starter", "No", "Yes", 1, 10)
+231 plan: ("Prepaid", "No", "Yes", 3, 29)
+111 plan: ("Prepaid", "No", "Yes", 3, 4)
+String lines: ("Unlimited Elite", "Yes", "Yes", "hello", 0)
+- my code isn't able to handle a string value for lines, so when I enter something like "hello" the compiler skips the last gigabytes question and automatically reports that my lines are not valid
+String gigabytes: ("Prepaid", "Yes", "Yes", 3, "hello")
+- my code isn't able to handle a string value for gigabytes, and when I enter something like "hello" the cin takes in the string as 0. Because my if-else statement takes in values from 0 to 30 inclusive, my code doesn't detect an issue and reports that my cell plan costs $105.00.
+int plan: (5, "hello", "bye", -12, 100)
+int autopay: ("Unlimited Elite", 5, "hello", -12, 100)
+int lines: ("Unlimited Elite", "Yes", 5, -12, 100)
