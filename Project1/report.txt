@@ -1,0 +1,16 @@
+Stella Huang
+005707861
+
+For step 5, I wanted to see how the compiler would handle division by zero. I first tried inputting 0 for the int variables 'onground' and 'online' to see how the compiler would handle dividing 0 by 0. When I did this, I got the incorrect and nonsensical result, “nan% of the cs sections occurred on-ground.” 
+
+I also tried inputting -1 for 'onground' and 1 for 'online' to see how the compiler would handle dividing a negative value (onground) by 0 (onground + online). When I did this, I got “Looks like some of these values don’t make sense.”, which is good, but I also got the nonsensical result, “-inf% of the cs sections occurred on-ground.”
+
+Finally, I tried inputting 1 for 'onground' and -1 for 'online' to see how the code would handle dividing a positive value by 0. When I did this, I got “Looks like some of these values don’t make sense.”, and the nonsensical result, “inf% of the cs sections occurred on-ground.” 
+
+For step 6 (logic_error.cpp), I edited line 23 so that the declaration of the variable ‘percentage’ excluded necessary parentheses involved in its calculation (I changed “double percentage = 100.0 * onground / (onground + online);” to “double percentage = 100.0 * onground / onground + online;”). I then tried inputting 0 as 'onground', and the compiler reported “nan% of the cs sections occurred on-ground.” rather than the desired result, “0.0% of the cs sections occurred on-ground.” This is because without the parantheses, by the order of operations, onground / onground is performed before onground + online. 
+
+The compiler reported the correct result in cases where 'onground' was a non-zero integer and 'online' was 0 (“100.0% of the cs sections occurred on-ground.”). However, when both 'onground' and 'online' were non-zero integers, the compiler would always report a percentage over 100.0% (because onground / onground will be 1, so 100.0 * onground / onground + online will always be over 100.0).
+
+For step 7 (compile_error.cpp), I edited line 17 by introducing a spelling error, where instead of using the extraction operator “>>” after “cin,” the programmer accidentally used the insertion operator “<<.” This caused the computer to give me a “Invalid operands to binary expression” error.
+
+Also, in line 23, I introduced a semantic error by renaming the variable’s identifier ‘percentage’ to ‘double’ (double double = 100.0 * onground / (onground + online);). This caused the computer to give me the “Cannot combine with previous ‘double’ declaration specifier” and “Expected unqualified-id” errors. The introduction of this semantic error also caused the “Use of undeclared identifier ‘percentage’” error to appear on line 29, in which the compiler couldn’t recognize the identifier ‘percentage’ because it was not declared in line 23. 
